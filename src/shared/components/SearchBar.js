@@ -17,8 +17,8 @@ class SearchBar extends React.Component {
     static propTypes = {
         searchTerm: PropTypes.string,
         errorMsg: PropTypes.string,
-        onSearchCriteriaChange: PropTypes.func.required,
-        onSearch: PropTypes.func.required
+        onSearchCriteriaChange: PropTypes.func,
+        onSearch: PropTypes.func
     };
 
     constructor(props) {
@@ -29,8 +29,8 @@ class SearchBar extends React.Component {
 
     onSearchTermChange(e) {
         this.props.onSearchCriteriaChange({
-                field: 'searchTerm',
-                value: e.target.value
+            field: 'searchTerm',
+            value: e.target.value
         });
     }
 
@@ -42,7 +42,7 @@ class SearchBar extends React.Component {
     render() {
         const { searchTerm, errorMsg } = this.props;
 
-        const errorElement = errorMsg ? (<div className='danger'>{errorMsg}</div>) : null;
+        const errorElement = errorMsg ? (<div className='search-bar__error bg-danger text-danger'>{errorMsg}</div>) : null;
 
         return (
             <form onSubmit={this.onSearch} className='search-bar container-fluid'>

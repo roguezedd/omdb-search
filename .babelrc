@@ -1,19 +1,23 @@
 {
   "env": {
     "production": {
-      "presets": ["@babel/preset-react", ["@babel/preset-env", { "modules": false }]],
+      "presets": [
+          "@babel/preset-react",
+          ["@babel/preset-env", {"targets": { "node": "current" }}]
+      ],
       "plugins": [
-        ["babel-plugin-styled-components", { "ssr": true, "displayName": false }],
-        ["@babel/plugin-transform-runtime", {"useESModules": true}],
+        ["@babel/plugin-transform-runtime", { "useESModules": false }],
         ["@babel/plugin-transform-spread", { "useBuiltIns": true }],
         ["@babel/plugin-proposal-class-properties"]
       ]
     },
     "development": {
-      "presets": ["@babel/preset-react", ["@babel/preset-env", { "modules": false }]],
+      "presets": [
+        "@babel/preset-react",
+        ["@babel/preset-env", {"targets": { "node": "current" }}]
+      ],
       "plugins": [
-        ["babel-plugin-styled-components", { "ssr": true, "displayName": false }],
-        ["@babel/plugin-transform-runtime", {"useESModules": true}],
+        ["@babel/plugin-transform-runtime", { "useESModules": false }],
         ["@babel/plugin-transform-spread", { "useBuiltIns": true }],
         ["@babel/plugin-proposal-class-properties"]
       ]

@@ -1,15 +1,18 @@
 import fs from 'fs';
 import path from 'path';
-
 import express from 'express';
 
 import React from 'react';
 import { renderToString } from 'react-dom/server';
-import { ServerStyleSheet } from 'styled-components';
+import { Provider } from 'react-redux';
 
 import compression from 'compression';
 
 import indexTemplate from './index.pug';
+
+import { requestSearchResults } from '../shared/redux/actions/searchActionCreator';
+import buildStore from '../shared/redux/buildStore';
+import Main from '../shared/Main';
 
 const { PerformanceObserver, performance } = require('perf_hooks');
 
@@ -38,10 +41,25 @@ app.set('view engine', 'pug');
 app.use(express.static(path.resolve(__dirname, 'public')));
 
 app.get('/', (req, res) => {
-    res.send(
-        indexTemplate({assets: manifestJson.assets, state: JSON.stringify({})})
-    );
+    const store = buildStore({
+        searchCriteria: {
+            searchTerm: req.query.search
+        }
+    });
+    store.dispatch(requestSearchResults()).then(() => {
+
+        const stateJson = JSON.stringify(store.getState());
+        const html = renderToString(<Provider store={store}><Main></Main></Provider>);
+
+        res.send(
+            indexTemplate({
+                assets: manifestJson.assets,
+                state: stateJson,
+                html
+            })
+        );
+    });
 });
 
 const port = 3030;
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+app.listen(port, () => console.log(`Example app listening on port ${port}!`));

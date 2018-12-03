@@ -1,3 +1,4 @@
+import Promise from 'promise';
 import { METHOD, requester } from '../../requester';
 
 import {
@@ -28,13 +29,21 @@ function setSearchResultError(errorMsg) {
     }
 }
 
+const EMPTY_SEARCH_RESULT = { Search: []};
+
 function requestSearchResults() {
     return (dispatch, getState) => {
         const state = getState();
         const { searchCriteria } = state;
         const { searchTerm } = searchCriteria;
 
-        requester({
+        if ( !searchTerm ) {
+            dispatch(setSearchResultError(''));
+            dispatch(setSearchResults(EMPTY_SEARCH_RESULT));
+            return new Promise.resolve({ data: EMPTY_SEARCH_RESULT });
+        }
+
+        return requester({
             method: METHOD.GET,
             url: 'http://www.omdbapi.com',
             queryParams: {
@@ -44,10 +53,18 @@ function requestSearchResults() {
             headers: { 'content-type': 'text/plain' }
         })
         .then((result) => {
+            if (result.data.Error) {
+                dispatch(setSearchResultError(result.data.Error));
+                dispatch(setSearchResults(EMPTY_SEARCH_RESULT));
+                return result;
+            }
+
             dispatch(setSearchResultError(''));
             dispatch(setSearchResults(result.data));
+            return result;
         }, (error) => {
             dispatch(setSearchResultError(error.message));
+            return error;
         })
     }
 }

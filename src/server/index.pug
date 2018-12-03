@@ -12,9 +12,8 @@
         | !{styleTags}
 </head>
 <body>
-    <div style="display:none" class="state">#{state}</div>
+    <input id="hiddenState" type="hidden" value="#{state}" />
     <div class="main-container">!{html}</div>
-    <div style="position:fixed; bottom:0; width: 100%; background:#CCCCCC">renderToString: #{rtsPerf}ms</div>
     each file in assets.length ? assets : []
         if /\.js$/.test(file.name)
             <script defer src='assets/#{file.name}'></script>

@@ -20,11 +20,12 @@ class OmdbCard extends React.Component {
     render() {
         const { media }  = this.props;
         const { Title, Year, Type, Poster } = media;
+        const imgUrl = Poster !== 'N/A' ? Poster : null;
 
         return (
             <section className='omdbcard'>
                 <div className='omdbcard__content'>
-                    <img className='omdbcard__image' src={Poster}/>
+                    <img className='omdbcard__image' src={imgUrl}/>
                     <div className='omdbcard__metadata'>
                         <h4 className='omdbcard__title'>{ Title }</h4>
                         <div className='omdbcard__year'><span>Year: </span><span>{ Year }</span></div>

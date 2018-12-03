@@ -28,7 +28,12 @@ const webpackConfigComplete = [
 
 const babelLoaderRule = () => ({
     test: /\.js$/,
-    loader: 'babel-loader',
+    loader: 'babel-loader'
+});
+
+const babelLoaderServerRule = () => ({
+    test: /\.js$/,
+    loader: 'babel-loader'
 });
 
 const imageLoaderRule = (emitFile = true) => ({
@@ -160,6 +165,7 @@ module.exports = (env, argv) => {
                         'NODE_ENV': JSON.stringify('production')
                     },
                 }),
+                new webpack.NormalModuleReplacementPlugin(/\.(css|less)$/, 'node-noop'),
                 function(compiler) {
                     this.plugin('done', stats => {
                         if (argv.watch) {
@@ -171,7 +177,7 @@ module.exports = (env, argv) => {
             module: {
                 rules: [
                     imageLoaderRule(false),
-                    babelLoaderRule(),
+                    babelLoaderServerRule(),
                     {
                         test: /\.pug/,
                         loader: 'pug-loader',

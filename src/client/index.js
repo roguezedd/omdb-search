@@ -7,8 +7,9 @@ import buildStore from '../shared/redux/buildStore';
 
 document.body.onload = () => {
   const rootEl = document.querySelector('.main-container');
-  const store = buildStore({});
-  ReactDOM.render(
+  const state = JSON.parse(document.querySelector('#hiddenState').value);
+  const store = buildStore(state);
+  ReactDOM.hydrate(
       <Provider store={store}>
         <Main id='main'/>
       </Provider>
