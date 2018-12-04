@@ -7,8 +7,10 @@ import FormControl from 'react-bootstrap/lib/FormControl';
 import InputGroup from 'react-bootstrap/lib/InputGroup';
 
 import {
+    initHistorySearchState,
     setSearchCriteria,
-    requestSearchResults
+    requestSearchResults,
+    updateSearchQueryParam
 } from '../redux/actions/searchActionCreator';
 
 import './SearchBar.less';
@@ -17,14 +19,34 @@ class SearchBar extends React.Component {
     static propTypes = {
         searchTerm: PropTypes.string,
         errorMsg: PropTypes.string,
+        onInitHistorySearchState: PropTypes.func,
         onSearchCriteriaChange: PropTypes.func,
-        onSearch: PropTypes.func
+        onSearch: PropTypes.func,
+        onUpdateQueryParam: PropTypes.func
     };
 
     constructor(props) {
         super(props);
         this.onSearchTermChange = this.onSearchTermChange.bind(this);
         this.onSearch = this.onSearch.bind(this);
+        this.onPopState = this.onPopState.bind(this);
+    }
+
+    onPopState(e) {
+        this.props.onSearchCriteriaChange({
+            field: 'searchTerm',
+            value: e && e.state ? e.state.search : ''
+        });
+        this.props.onSearch();
+    }
+
+    componentDidMount() {
+        this.props.onInitHistorySearchState();
+        window.addEventListener('popstate', this.onPopState);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('popstate', this.onPopState);
     }
 
     onSearchTermChange(e) {
@@ -37,6 +59,7 @@ class SearchBar extends React.Component {
     onSearch(e) {
         e.preventDefault();
         this.props.onSearch();
+        this.props.onUpdateQueryParam();
     }
 
     render() {
@@ -76,6 +99,12 @@ function mapDispatchToProps(dispatch) {
         },
         onSearch: () => {
             dispatch(requestSearchResults());
+        },
+        onUpdateQueryParam: () => {
+            dispatch(updateSearchQueryParam());
+        },
+        onInitHistorySearchState: () => {
+            dispatch(initHistorySearchState())
         }
     }
 }

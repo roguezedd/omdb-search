@@ -31,11 +31,16 @@ function setSearchResultError(errorMsg) {
 
 const EMPTY_SEARCH_RESULT = { Search: []};
 
+function getSearchTerm(state) {
+    const { searchCriteria } = state;
+    const { searchTerm } = searchCriteria;
+    return searchTerm;
+}
+
 function requestSearchResults() {
     return (dispatch, getState) => {
         const state = getState();
-        const { searchCriteria } = state;
-        const { searchTerm } = searchCriteria;
+        const searchTerm = getSearchTerm(state);
 
         if ( !searchTerm ) {
             dispatch(setSearchResultError(''));
@@ -69,7 +74,25 @@ function requestSearchResults() {
     }
 }
 
+function updateSearchQueryParam() {
+    return (dispatch, getState) => {
+        const state = getState();
+        const searchTerm = getSearchTerm(state);
+        window.history.pushState({search: searchTerm}, '', `?search=${searchTerm}`);
+    };
+}
+
+function initHistorySearchState() {
+    return (dispatch, getState) => {
+        const state = getState();
+        const searchTerm = getSearchTerm(state);
+        window.history.replaceState({search: searchTerm}, '', `?search=${searchTerm}`);
+    };
+}
+
 export {
+    initHistorySearchState,
     requestSearchResults,
-    setSearchCriteria
+    setSearchCriteria,
+    updateSearchQueryParam
 };
